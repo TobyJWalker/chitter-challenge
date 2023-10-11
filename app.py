@@ -2,6 +2,7 @@ import os, peewee
 from flask import Flask, request, render_template, redirect
 from datetime import datetime
 from lib.model_definition import User, Peep
+from lib.validator import Validator
 
 # Create a new Flask app
 app = Flask(__name__)
@@ -47,6 +48,24 @@ def search_for_user():
 @app.route('/signup', methods=['GET'])
 def get_signup_form():
     return render_template('signup.html')
+
+@app.route('/signup', methods=['POST'])
+def sign_up():
+    vd = Validator()
+
+    email = request.form['email']
+    username = request.form['username']
+    name = request.form['name']
+    password = request.form['password']
+    password_confirm = request.form['password-confirm']
+
+    valid_login, errors = vd.validate_signup(email, username, name, password, password_confirm)
+
+    if valid_login:
+        User(name=name, email=email, username=username, password=password).save()
+        return redirect('/home')
+    else:
+        return render_template('signup.html', errors=errors)
 
 
 # These lines start the server if you run this file directly

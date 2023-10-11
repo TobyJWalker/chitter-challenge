@@ -33,8 +33,14 @@ class Validator:
         
         return True
     
-    def validate_signup(self, email, username, password, password_confirmation):
-        errors = {'email': [], 'username': [], 'password': [], 'password_confirmation': []}
+    def validate_name(self, name):
+        if name == '' or name.isspace():
+            return False
+        
+        return True
+
+    def validate_signup(self, email, username, name, password, password_confirmation):
+        errors = {'email': [], 'username': [], 'name': [], 'password': [], 'password_confirmation': []}
         valid = True
 
         if not self.validate_email(email):
@@ -50,6 +56,10 @@ class Validator:
             errors['password'].append('Password must contain at least one number')
             errors['password'].append('Password must contain at least one uppercase letter')
             errors['password'].append('Password must contain at least one special character')
+            valid = False
+        
+        if not self.validate_name(name):
+            errors['name'].append('Name must not be emptys')
             valid = False
         
         if password != password_confirmation:

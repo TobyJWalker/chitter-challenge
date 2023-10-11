@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Sign up{% endblock %}
+
+{% block content %}
+    <div class="container-fluid" style="padding-bottom:3rem;padding-top:2rem;color:white;">
+        <h1>Sign up</h1>
+        <p class="lead">Create an account to start peeping!</p>
+    </div>
+
+    <div class="container-sm" style="padding-bottom:3rem;padding-top:2rem;color:white;">
+        <form action="/signup" method="post">
+            <div class="mb-3 mx-auto" id="name-input" style="max-width:30%;">
+                <label for="name" class="form-label">Name</label>
+                {% if errors %}
+                    {% for error in errors['name'] %}
+                        <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <input class="form-control" type="text" name="name" id="name" required>
+            </div>
+            <div class="mb-3 mx-auto" id="username-input" style="max-width:30%;">
+                <label for="username" class="form-label">Username</label>
+                {% if errors %}
+                    {% for error in errors['username'] %}
+                        <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <input class="form-control" type="text" name="username" id="username" required>
+            </div>
+            <div class="mb-3 mx-auto" id="email-input" style="max-width:30%;">
+                <label for="email" class="form-label">Email</label>
+                {% if errors %}
+                    {% for error in errors['email'] %}
+                        <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <input class="form-control" type="text" name="email" id="email" required>
+            </div>
+            <div class="mb-3 mx-auto" id="password-input" style="max-width:30%;">
+                <label for="password" class="form-label">Password</label>
+                {% if errors %}
+                    {% for error in errors['password'] %}
+                        <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <input class="form-control" type="password" name="password" id="password" required>
+            </div>
+            <div class="mb-3 mx-auto" id="confirm-password-input" style="max-width:30%;">
+                <label for="password-confirm" class="form-label">Confirm Password</label>
+                {% if errors %}
+                    {% for error in errors['password_confirmation'] %}
+                        <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <input class="form-control" type="password" name="password-confirm" id="password-confirm" required>
+            </div>
+            <button class="btn btn-outline-primary" type="submit" id="sign-up-button">Sign up</button>
+        </form>
+    </div>
+{% endblock %}
