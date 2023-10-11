@@ -77,6 +77,12 @@ def sign_up():
     else:
         return render_template('signup.html', errors=errors)
 
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('user_id')
+    session.pop('username')
+    return redirect('/home')
+
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
