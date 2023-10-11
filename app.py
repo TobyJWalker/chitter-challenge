@@ -103,6 +103,16 @@ def login():
     else:
         return render_template('login.html', errors=errors)
 
+@app.route('/peep', methods=['POST'])
+def post_peep():
+    peep = request.form['peep-input']
+
+    if peep == '' or peep.isspace() or len(peep) > 140 or 'user_id' not in session:
+        return redirect('/home')
+    else:
+        Peep(user=session['user_id'], content=peep, timestamp=datetime.now()).save()
+        return redirect('/home')
+
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database

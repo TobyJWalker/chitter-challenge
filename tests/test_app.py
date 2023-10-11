@@ -135,3 +135,28 @@ def test_login(page, test_web_address):
 
     peep_box = page.locator('#post-box')
     expect(peep_box).to_have_count(1)
+
+def test_make_peep(page, test_web_address):
+    seed_database()
+
+    page.goto(f'http://{test_web_address}/login')
+
+    username = page.locator('#username')
+    username.fill('twalker')
+
+    password = page.locator('#password')
+    password.fill('tobypassword')
+
+    submit = page.locator('#login-confirm-button')
+    submit.click()
+
+    peep_input = page.locator('#peep-input')
+    peep_input.fill('This is a test peep')
+
+    submit = page.locator('#peep-submit')
+    submit.click()
+
+    page.screenshot(path='screenshot.png', full_page=True)
+
+    peeps = page.locator('.peep')
+    expect(peeps).to_have_count(7)
