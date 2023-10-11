@@ -10,6 +10,12 @@ I will also be experimenting with some basic css such as bootstrap.
 - Run python3 app.py to start the web server
 - Run pytest to run any project tests
 
+## Testing
+
+Pytest is used to test this project.
+The database is seeded using the seeds/seed_db.py file
+This file uses peewee to seed the database with test data.
+
 ## User Stories
 
 STRAIGHT UP
