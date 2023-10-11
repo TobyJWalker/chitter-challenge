@@ -12,6 +12,7 @@ pytest-xprocess = "*"
 py = "*"
 peewee = "*"
 psycopg2 = "*"
+colorama = "*"
 
 [dev-packages]
 autopep8 = "*"
