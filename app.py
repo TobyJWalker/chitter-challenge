@@ -13,7 +13,14 @@ def index():
 
 @app.route('/home', methods=['GET'])
 def home():
-    return render_template('home.html')
+    peeps = sorted(Peep.select().limit(20), key=lambda p: p.timestamp, reverse=True)
+
+    # get the users of the peeps
+    users = {}
+    for peep in peeps:
+        users[peep.user] = User.get_by_id(peep.user).username
+
+    return render_template('home.html', peeps=peeps, users=users)
 
 
 # These lines start the server if you run this file directly
