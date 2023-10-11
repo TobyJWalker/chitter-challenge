@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}{{ error_title }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid" style="padding-bottom:3rem;padding-top:2rem;color:white;">
+        <h1 id="error-msg">{{ error_msg }}</h1>
+    </div>
+{% endblock %}
