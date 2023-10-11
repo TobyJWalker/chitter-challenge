@@ -3,6 +3,13 @@ This is a challenge project to make a twitter/X clone.
 I will be using what I know about html, databases and flask to make this project.
 I will also be experimenting with some basic css such as bootstrap.
 
+## How to use
+
+- Run pipenv install to install dependencies
+- Run pipenv shell to enter the virtual environment
+- Run python3 app.py to start the web server
+- Run pytest to run any project tests
+
 ## User Stories
 
 STRAIGHT UP
