@@ -3,10 +3,22 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <div class="container-fluid" style="padding-bottom:3rem;padding-top:2rem;color:white;">
+    <div class="container-fluid" style="padding-bottom:2rem;padding-top:2rem;color:white;">
         <h1>Your Feed</h1>
+        {% if logged_in %}
+            <div class="container-fluid" style="padding-bottom:3rem;padding-top:2rem;">
+                <form action="/peep" method="post">
+                    <div class="mb-3">
+                        <label for="content" class="form-label" style="color:white;">What's on your mind?</label>
+                        <textarea class="form-control mx-auto" id="peep-input" name="peep-input" rows="3" style="max-width:50%;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Peep</button>
+                </form>
+            </div>
+        {% endif %}
         <p class="lead">See what others have posted!</p>
     </div>
+
 
     {% if peeps %}
         {% for peep in peeps %}

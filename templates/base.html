@@ -21,10 +21,17 @@
                             <button class="btn btn-outline-primary" type="submit" id="search-button">Search</button>
                         </form>
                     </ul>
-                    <form action="/signup" method="get">
-                        <button class="btn btn-outline-primary me-2" type="signup" id="signup-button">Sign Up</button>
-                    </form>
-                    <button class="btn btn-outline-primary me-2" type="login">Log In</button>
+                    {% if not session['user_id'] %}
+                        <form action="/signup" method="get">
+                            <button class="btn btn-outline-primary me-2" type="signup" id="signup-button">Sign Up</button>
+                        </form>
+                        <button class="btn btn-outline-primary me-2" type="login">Log In</button>
+                    {% else %}
+                        <p class="navbar-text me-2 mb-0">Logged in as {{ session['username'] }}</p>
+                        <form action="/logout" method="post">
+                            <button class="btn btn-outline-primary me-2" type="logout">Log Out</button>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </nav>

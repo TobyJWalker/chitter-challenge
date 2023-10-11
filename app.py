@@ -1,6 +1,6 @@
 import os, peewee
 from hashlib import sha256
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, session
 from datetime import datetime
 from lib.model_definition import User, Peep
 from lib.validator import Validator
@@ -21,10 +21,17 @@ def home():
     users = {}
     for peep in peeps:
         users[peep.user] = User.get_by_id(peep.user).username
+    
+    # check session account still exists
+    if 'user_id' in session:
+        try:
+            User.get_by_id(session['user_id'])
+        except peewee.DoesNotExist:
+            session.pop('user_id')
 
-    return render_template('home.html', peeps=peeps, users=users)
+    return render_template('home.html', peeps=peeps, users=users, logged_in=session['user_id'] if 'user_id' in session else None)
 
-@app.route('/<user>', methods=['GET'])
+@app.route('/user/<user>', methods=['GET'])
 def get_user_peeps(user):
     account = User.select().where(User.username == user).get()
 
@@ -44,7 +51,7 @@ def search_for_user():
         except:
             return render_template('error.html', error_title='User not found', error_msg=f'@{username} could not be found.')
 
-        return redirect(f'/{user.username}')
+        return redirect(f'/user/{user.username}')
 
 @app.route('/signup', methods=['GET'])
 def get_signup_form():
@@ -64,6 +71,8 @@ def sign_up():
 
     if valid_login:
         User(name=name, email=email, username=username, password=sha256(password.encode()).hexdigest()).save()
+        session['user_id'] = User.select().where(User.username == username).get().id
+        session['username'] = username
         return redirect('/home')
     else:
         return render_template('signup.html', errors=errors)
@@ -73,5 +82,6 @@ def sign_up():
 # They also start the server configured to use the test database
 # if started in test mode.
 if __name__ == '__main__':
+    app.secret_key = 'Security is Crucial'
     app.run(debug=True, port=int(os.environ.get('PORT', 5001)))
 
