@@ -6,7 +6,7 @@
     <div class="container-fluid" style="padding-bottom:2rem;padding-top:2rem;color:white;">
         <h1>Your Feed</h1>
         {% if logged_in %}
-            <div class="container-fluid" style="padding-bottom:3rem;padding-top:2rem;">
+            <div class="container-fluid" style="padding-bottom:3rem;padding-top:2rem;" id="post-box">
                 <form action="/peep" method="post">
                     <div class="mb-3">
                         <label for="content" class="form-label" style="color:white;">What's on your mind?</label>

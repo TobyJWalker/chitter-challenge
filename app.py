@@ -83,6 +83,26 @@ def logout():
     session.pop('username')
     return redirect('/home')
 
+@app.route('/login', methods=['GET'])
+def show_login_form():
+    return render_template('login.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    vd = Validator()
+
+    username = request.form['username']
+    password = request.form['password']
+
+    valid_login, errors = vd.validate_login(username, password)
+
+    if valid_login:
+        session['user_id'] = User.select().where(User.username == username).get().id
+        session['username'] = username
+        return redirect('/home')
+    else:
+        return render_template('login.html', errors=errors)
+
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database

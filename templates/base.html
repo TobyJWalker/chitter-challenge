@@ -25,7 +25,9 @@
                         <form action="/signup" method="get">
                             <button class="btn btn-outline-primary me-2" type="signup" id="signup-button">Sign Up</button>
                         </form>
-                        <button class="btn btn-outline-primary me-2" type="login">Log In</button>
+                        <form action="/login" method="get">
+                            <button class="btn btn-outline-primary me-2" type="login" id="login-button">Log In</button>
+                        </form>
                     {% else %}
                         <p class="navbar-text me-2 mb-0">Logged in as {{ session['username'] }}</p>
                         <form action="/logout" method="post">
