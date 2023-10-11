@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid" style="padding-bottom:3rem;padding-top:2rem;color:white;">
+        <h1>@{{ user }}</h1>
+    </div>
+
+    {% if peeps %}
+        {% for peep in peeps %}
+
+            <div class="card bg-body-tertiary peep mb-4 mx-auto shadow-sm" data-bs-theme="dark" style="width: 32rem;border-radius:1rem;">
+                <div class="card-body text-start">
+                    <h6 class="card-title">@{{ user }}</h6>
+                    <p class="card-text">{{ peep.content }}</p>
+                    <p class="card-text text-body-secondary">Posted: {{ peep.timestamp.strftime('%H:%M %d/%m/%Y') }}</p>
+                </div>
+            </div>
+
+        {% endfor %}
+    {% else %}
+        <p>No peeps yet!</p>
+    {% endif %}
+{% endblock %}
