@@ -87,3 +87,51 @@ def test_sign_up_fail(page, test_web_address):
 
     error_msgs = page.locator('.text-danger')
     expect(error_msgs).to_have_count(3)
+
+def test_sign_up_success(page, test_web_address):
+    seed_database()
+
+    page.goto(f'http://{test_web_address}/signup')
+
+    email = page.locator('#email')
+    email.fill('tjwalker@gmail.com')
+
+    username = page.locator('#username')
+    username.fill('t-walker')
+
+    password = page.locator('#password')
+    password.fill('Password@1')
+
+    name = page.locator('#name')
+    name.fill('Tom Walker')
+
+    password_confirmation = page.locator('#password-confirm')
+    password_confirmation.fill('Password@1')
+
+    submit = page.locator('#sign-up-button')
+    submit.click()
+
+    page.screenshot(path='screenshot.png', full_page=True)
+
+    post_box = page.locator('#post-box')
+    expect(post_box).to_have_count(1)
+
+def test_login(page, test_web_address):
+    seed_database()
+
+    page.goto(f'http://{test_web_address}/login')
+
+    username = page.locator('#username')
+    username.fill('twalker')
+
+    password = page.locator('#password')
+    password.fill('tobypassword')
+
+    submit = page.locator('#login-confirm-button')
+    submit.click()
+
+    url = page.url
+    assert url == f'http://{test_web_address}/home'
+
+    peep_box = page.locator('#post-box')
+    expect(peep_box).to_have_count(1)

@@ -23,3 +23,14 @@ def test_validate_signup():
     assert attempt_3 == False
     assert 'Username already taken' in errors['username']
     assert 'Email already taken' in errors['email']
+
+def test_validate_login():
+    seed_database()
+    vd = Validator()
+
+    attempt_1, _ = vd.validate_login('twalker', 'tobypassword')
+    assert attempt_1 == True
+
+    attempt_2, errors = vd.validate_login('twalker', 'wrongpassword')
+    assert attempt_2 == False
+    assert 'Incorrect password' in errors['password']
