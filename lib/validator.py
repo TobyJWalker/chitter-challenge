@@ -1,5 +1,6 @@
 import re
 from lib.model_definition import User, Peep
+from hashlib import sha256
 
 class Validator:
 
@@ -79,5 +80,22 @@ class Validator:
             valid = False
         except:
             pass
+        
+        return valid, errors
+
+    def validate_login(self, username, password):
+        errors = {'username': [], 'password': []}
+        valid = True
+
+        try:
+            user = User.select().where(User.username == username).get()
+        except:
+            errors['username'].append('Username not found')
+            valid = False
+        
+        if valid:
+            if sha256(password.encode()).hexdigest() != user.password:
+                errors['password'].append('Incorrect password')
+                valid = False
         
         return valid, errors
