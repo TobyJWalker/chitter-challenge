@@ -1,4 +1,5 @@
 import os, peewee
+from hashlib import sha256
 from flask import Flask, request, render_template, redirect
 from datetime import datetime
 from lib.model_definition import User, Peep
@@ -62,7 +63,7 @@ def sign_up():
     valid_login, errors = vd.validate_signup(email, username, name, password, password_confirm)
 
     if valid_login:
-        User(name=name, email=email, username=username, password=password).save()
+        User(name=name, email=email, username=username, password=sha256(password.encode()).hexdigest()).save()
         return redirect('/home')
     else:
         return render_template('signup.html', errors=errors)
