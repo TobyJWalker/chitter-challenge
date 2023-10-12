@@ -6,7 +6,7 @@ def test_validate_signup():
     seed_database()
     vd = Validator()
 
-    attempt_1, _ = vd.validate_signup('twalker@outlook.com', 'twalker120', 'Tom Walker', 'Password@1', 'Password@1')
+    attempt_1, _ = vd.validate_signup('twalker@outlook.com', 'twalker120', 'Tom Walker', '1@Password', '1@Password')
     assert attempt_1 == True
 
     attempt_2, errors = vd.validate_signup('twalkergmail.com', 'hi', '', 'pass', 'password')

@@ -107,8 +107,12 @@ def login():
 def post_peep():
     peep = request.form['peep-input']
 
-    if peep == '' or peep.isspace() or len(peep) > 140 or 'user_id' not in session:
+    if peep == '' or peep.isspace():
         return redirect('/home')
+    elif len(peep) > 140:
+        return render_template('error.html', error_title='Peep too long', error_msg='Peeps must be 140 characters or less.')
+    elif 'user_id' not in session:
+        return render_template('error.html', error_title='Not logged in', error_msg='You must be logged in to peep.')
     else:
         Peep(user=session['user_id'], content=peep, timestamp=datetime.now()).save()
         return redirect('/home')

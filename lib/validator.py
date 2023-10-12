@@ -52,12 +52,22 @@ class Validator:
             errors['username'].append('Username must be at least 3 characters')
             valid = False
         
-        if not self.validate_password(password):
+        if len(password) < 8:
             errors['password'].append('Password must be at least 8 characters')
+            valid = False
+        
+        if not any(char.isdigit() for char in password):
             errors['password'].append('Password must contain at least one number')
+            valid = False
+        
+        if not any(char.isupper() for char in password):
             errors['password'].append('Password must contain at least one uppercase letter')
+            valid = False
+        
+        if not any(c in password for c in ['@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '-', '+', '=']):
             errors['password'].append('Password must contain at least one special character')
             valid = False
+        
         
         if not self.validate_name(name):
             errors['name'].append('Name must not be emptys')
