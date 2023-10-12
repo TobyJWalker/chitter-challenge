@@ -28,10 +28,13 @@ def send_email(receiver, subject, content):
 app = Flask(__name__)
 
 # == Your Routes Here ==
+
+# redirect user to home page if they go to the root
 @app.route('/', methods=['GET'])
 def index():
     return redirect('/home')
 
+# show the home page, load the 20 most recent peeps
 @app.route('/home', methods=['GET'])
 def home():
     peeps = sorted(Peep.select().limit(20), key=lambda p: p.timestamp, reverse=True)
@@ -50,82 +53,116 @@ def home():
 
     return render_template('home.html', peeps=peeps, users=users, logged_in=session['user_id'] if 'user_id' in session else None)
 
+# show the peeps of a specific user
 @app.route('/user/<user>', methods=['GET'])
 def get_user_peeps(user):
-    account = User.select().where(User.username == user).get()
+    # get the account of the user
+    try:
+        account = User.select().where(User.username == user).get()
+    
+    # return error page if user not found
+    except:
+        return render_template('error.html', error_title='User not found', error_msg=f'@{user} could not be found.')
 
+    # get a sorted list of peeps from the user
     peeps = sorted(Peep.select().where(Peep.user == account.id), key=lambda p: p.timestamp, reverse=True)
 
     return render_template('user.html', peeps=peeps, user=account.username)
 
+# search for a specific user
 @app.route('/search', methods=['POST'])
 def search_for_user():
-    username = request.form['username']
+    username = request.form['username'] # get username from form
 
+    # do some error checking
     if username == '' or username.isspace():
         return redirect('/home')
     else:
+        # get user from database
         try:
             user = User.select().where(User.username == username).get()
+        
+        # return error page if user not found
         except:
             return render_template('error.html', error_title='User not found', error_msg=f'@{username} could not be found.')
 
         return redirect(f'/user/{user.username}')
 
+# display sign up page
 @app.route('/signup', methods=['GET'])
 def get_signup_form():
     return render_template('signup.html')
 
+# sign up a new user
 @app.route('/signup', methods=['POST'])
 def sign_up():
-    vd = Validator()
+    vd = Validator() # create a validator object
 
+    # get form data
     email = request.form['email']
     username = request.form['username']
     name = request.form['name']
     password = request.form['password']
     password_confirm = request.form['password-confirm']
 
+    # validate the data
     valid_login, errors = vd.validate_signup(email, username, name, password, password_confirm)
 
+    # if valid, create the user and log them in
     if valid_login:
         User(name=name, email=email, username=username, password=sha256(password.encode()).hexdigest()).save()
         session['user_id'] = User.select().where(User.username == username).get().id
         session['username'] = username
         return redirect('/home')
+    
+    # if not valid, show the errors
     else:
         return render_template('signup.html', errors=errors)
 
+# log out the user
 @app.route('/logout', methods=['POST'])
 def logout():
-    session.pop('user_id')
-    session.pop('username')
+    try:
+        session.pop('user_id')
+        session.pop('username')
+    except:
+        pass
     return redirect('/home')
 
+# show the login page
 @app.route('/login', methods=['GET'])
 def show_login_form():
     return render_template('login.html')
 
+# log in the user
 @app.route('/login', methods=['POST'])
 def login():
-    vd = Validator()
+    vd = Validator() # create a validator object
 
+    # get form data
     username = request.form['username']
     password = request.form['password']
 
+    # validate the data
     valid_login, errors = vd.validate_login(username, password)
 
+    # if valid, log the user in
     if valid_login:
         session['user_id'] = User.select().where(User.username == username).get().id
         session['username'] = username
         return redirect('/home')
+    
+    # if not valid, show the errors
     else:
         return render_template('login.html', errors=errors)
 
+# create a new peep
 @app.route('/peep', methods=['POST'])
 def post_peep():
+    # get the peep content
     peep = request.form['peep-input']
 
+    # do some error checking
     if peep == '' or peep.isspace():
         return redirect('/home')
     elif len(peep) > 140:
@@ -133,20 +170,23 @@ def post_peep():
     elif 'user_id' not in session:
         return render_template('error.html', error_title='Not logged in', error_msg='You must be logged in to peep.')
     else:
+        # create the peep
         Peep(user=session['user_id'], content=peep, timestamp=datetime.now()).save()
 
-        # email any people tagged in the peep
+        # get any people tagged in the peep
         tagged = re.findall(r'@(\w+)', peep)
 
         for username in tagged:
             try:
+                # get the user and send them an email
                 user = User.select().where(User.username == username).get()
                 subject = f"You've been tagged!"
                 content = f'You were tagged in a peep by @{session["username"]}.\n\n{peep}'
 
                 # use multithreading to send the email so the user is not waiting
                 Thread(target=send_email, args=(user.email, subject, content)).start()
-                
+
+            # if the user does not exist, do nothing
             except Exception as e:
                 print(f'Could not send email to {username}')
                 print(e)
