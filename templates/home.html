@@ -4,8 +4,8 @@
 
 {% block content %}
     <div class="container-fluid" style="padding-bottom:2rem;padding-top:2rem;color:white;">
-        <h1>Your Feed</h1>
         {% if logged_in %}
+            <h1>Your Feed</h1>
             <div class="container-fluid" style="padding-bottom:3rem;padding-top:2rem;" id="post-box">
                 <form action="/peep" method="post">
                     <div class="mb-3">
@@ -15,6 +15,8 @@
                     <button type="submit" class="btn btn-primary" id="peep-submit">Peep</button>
                 </form>
             </div>
+        {% else %}
+            <h1>Welcome to Chitter!</h1>
         {% endif %}
         <p class="lead">See what others have posted!</p>
     </div>
