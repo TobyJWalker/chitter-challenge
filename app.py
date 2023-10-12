@@ -1,9 +1,28 @@
-import os, peewee
+import os, peewee, re, smtplib, ssl
+from email.message import EmailMessage
 from hashlib import sha256
 from flask import Flask, request, render_template, redirect, session
 from datetime import datetime
 from lib.model_definition import User, Peep
 from lib.validator import Validator
+from threading import Thread
+
+EMAIL_ADDR = os.environ.get('EMAIL_ADDR')
+GMAIL_APP_PW = os.environ.get('GMAIL_APP_PW')
+
+print(EMAIL_ADDR)
+
+def send_email(receiver, subject, content):
+    em = EmailMessage()
+    em.set_content(content)
+    em['Subject'] = subject
+    em['From'] = EMAIL_ADDR
+    em['To'] = receiver
+    context = ssl.create_default_context()
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as s:
+        s.login(EMAIL_ADDR, GMAIL_APP_PW)
+        s.sendmail(EMAIL_ADDR, [receiver], em.as_string())
 
 # Create a new Flask app
 app = Flask(__name__)
@@ -115,6 +134,23 @@ def post_peep():
         return render_template('error.html', error_title='Not logged in', error_msg='You must be logged in to peep.')
     else:
         Peep(user=session['user_id'], content=peep, timestamp=datetime.now()).save()
+
+        # email any people tagged in the peep
+        tagged = re.findall(r'@(\w+)', peep)
+
+        for username in tagged:
+            try:
+                user = User.select().where(User.username == username).get()
+                subject = f"You've been tagged!"
+                content = f'You were tagged in a peep by @{session["username"]}.\n\n{peep}'
+
+                # use multithreading to send the email so the user is not waiting
+                Thread(target=send_email, args=(user.email, subject, content)).start()
+                
+            except Exception as e:
+                print(f'Could not send email to {username}')
+                print(e)
+
         return redirect('/home')
 
 
