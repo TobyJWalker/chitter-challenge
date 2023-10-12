@@ -13,6 +13,10 @@ GMAIL_APP_PW = os.environ.get('GMAIL_APP_PW')
 print(EMAIL_ADDR)
 
 def send_email(receiver, subject, content):
+    # stop function if no email or password found
+    if EMAIL_ADDR is None or GMAIL_APP_PW is None:
+        return None
+    
     em = EmailMessage()
     em.set_content(content)
     em['Subject'] = subject
