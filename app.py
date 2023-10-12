@@ -10,8 +10,6 @@ from threading import Thread
 EMAIL_ADDR = os.environ.get('EMAIL_ADDR')
 GMAIL_APP_PW = os.environ.get('GMAIL_APP_PW')
 
-print(EMAIL_ADDR)
-
 def send_email(receiver, subject, content):
     # stop function if no email or password found
     if EMAIL_ADDR is None or GMAIL_APP_PW is None:
@@ -178,9 +176,12 @@ def post_peep():
         Peep(user=session['user_id'], content=peep, timestamp=datetime.now()).save()
 
         # get any people tagged in the peep
-        tagged = re.findall(r'@(\w+)', peep)
+        tagged = re.findall(r'@(\w+)[\W\D]', peep)
 
-        for username in tagged:
+        # remove any possible trailing punctuation from the usernames and remove duplicates
+        tagged_users = set(tagged)
+
+        for username in tagged_users:
             try:
                 # get the user and send them an email
                 user = User.select().where(User.username == username).get()
@@ -196,6 +197,28 @@ def post_peep():
                 print(e)
 
         return redirect('/home')
+
+# route for listing logged in users' mentions
+@app.route('/mentions', methods=['GET'])
+def get_mentions():
+    # check if user is logged in
+    if 'user_id' not in session or 'username' not in session:
+        return render_template('error.html', error_title='Not logged in', error_msg='You must be logged in to view your mentions.')
+
+    try:
+        # get a list of peeps that mention the user
+        peeps = Peep.select().where(Peep.content.contains(f'@{session["username"]}'))
+
+        # get the users of the peeps
+        users = {}
+        for peep in peeps:
+            users[peep.user] = User.get_by_id(peep.user).username
+
+    except:
+        peeps = []
+        users = {}
+
+    return render_template('mentions.html', peeps=peeps, users=users)
 
 
 # These lines start the server if you run this file directly

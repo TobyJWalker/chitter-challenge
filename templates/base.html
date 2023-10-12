@@ -20,6 +20,11 @@
                             <input class="form-control me-2" type="text" name="username" placeholder="Search user" aria-label="Search" id="search-user">
                             <button class="btn btn-outline-primary" type="submit" id="search-button">Search</button>
                         </form>
+                        {% if session['user_id'] %}
+                            <form class="d-flex ms-4" action="/mentions" method="get">
+                                <button class="btn btn-outline-primary me-2" type="mentions" id="mentions-button">Mentions</button>
+                            </form>
+                        {% endif %}
                     </ul>
                     {% if not session['user_id'] %}
                         <form action="/signup" method="get">
