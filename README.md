@@ -5,9 +5,12 @@ I will also be experimenting with some basic css such as bootstrap.
 
 ## How to use
 
+- Run pipenv install to install dependencies
+
 - Install psql
 - Create 'chitter' database
 - run 'python3 lib/model_definition.py' to create the tables
+- Optionally run 'python3 seeds/seed_db.py' to seed the database with test data
 
 - Create an environment variable with an email and password for the email account you want to use to send emails from. Keys are EMAIL_ADDR and GMAIL_APP_PW. 
 
@@ -17,7 +20,6 @@ I can provide you with an email and password if you want to test the email funct
 
 - Comment out the lines in app.py that sets the environment variable if you don't want to use email functionality or do not own a gmail account with two step verification.
 
-- Run pipenv install to install dependencies
 - Run pipenv shell to enter the virtual environment and load variables
 - Run 'python3 app.py' to start the web server
 - Run pytest to run any project tests
@@ -29,6 +31,17 @@ The database is seeded using the seeds/seed_db.py file
 This file uses peewee to seed the database with test data.
 
 Make sure that the database and tables have been created before running tests.
+
+## Technologies used
+
+- Python
+- Flask
+- Peewee
+- Postgresql
+- HTML
+- CSS / Bootstrap
+- Pytest
+- Multi-threading (for emails)
 
 ## User Stories
 
