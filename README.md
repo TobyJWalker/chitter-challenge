@@ -18,7 +18,7 @@ I can provide you with an email and password if you want to test the email funct
 - Comment out the lines in app.py that sets the environment variable if you don't want to use email functionality or do not own a gmail account with two step verification.
 
 - Run pipenv install to install dependencies
-- Run pipenv shell to enter the virtual environment
+- Run pipenv shell to enter the virtual environment and load variables
 - Run 'python3 app.py' to start the web server
 - Run pytest to run any project tests
 
