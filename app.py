@@ -26,6 +26,28 @@ def send_email(receiver, subject, content):
         s.login(EMAIL_ADDR, GMAIL_APP_PW)
         s.sendmail(EMAIL_ADDR, [receiver], em.as_string())
 
+def send_tag_mail(peep):
+    # get any people tagged in the peep
+    tagged = re.findall(r'@(\w+)[\W\D]*', peep)
+
+    # remove any possible trailing punctuation from the usernames and remove duplicates
+    tagged_users = set(tagged)
+
+    for username in tagged_users:
+        try:
+            # get the user and send them an email
+            user = User.select().where(User.username == username).get()
+            subject = f"You've been tagged!"
+            content = f'You were tagged in a peep by @{session["username"]}.\n\n{peep}'
+
+            # use multithreading to send the email so the user is not waiting
+            Thread(target=send_email, args=(user.email, subject, content)).start()
+
+        # if the user does not exist, do nothing
+        except Exception as e:
+            print(f'Could not send email to {username}')
+            print(e)
+
 # Create a new Flask app
 app = Flask(__name__)
 
@@ -168,28 +190,11 @@ def post_peep():
         return render_template('error.html', error_title='Not logged in', error_msg='You must be logged in to peep.')
     else:
         # create the peep
-        Peep(user=session['user_id'], content=peep, timestamp=datetime.now()).save()
+        new_peep = Peep(user=session['user_id'], content=peep, timestamp=datetime.now())
+        new_peep.save()
 
-        # get any people tagged in the peep
-        tagged = re.findall(r'@(\w+)[\W\D]', peep)
-
-        # remove any possible trailing punctuation from the usernames and remove duplicates
-        tagged_users = set(tagged)
-
-        for username in tagged_users:
-            try:
-                # get the user and send them an email
-                user = User.select().where(User.username == username).get()
-                subject = f"You've been tagged!"
-                content = f'You were tagged in a peep by @{session["username"]}.\n\n{peep}'
-
-                # use multithreading to send the email so the user is not waiting
-                Thread(target=send_email, args=(user.email, subject, content)).start()
-
-            # if the user does not exist, do nothing
-            except Exception as e:
-                print(f'Could not send email to {username}')
-                print(e)
+        # send emails to any tagged users
+        send_tag_mail(peep)
 
         return redirect('/home')
 
