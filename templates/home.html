@@ -27,7 +27,7 @@
 
             <div class="card bg-body-tertiary peep mb-4 mx-auto shadow-sm" data-bs-theme="dark" style="width: 32rem;border-radius:1rem;">
                 <div class="card-body text-start">
-                    <h6 class="card-title">@{{ users[peep.user] }}</h6>
+                    <h6 class="card-title">@{{ peep.user.username }}</h6>
                     <p class="card-text">{{ peep.content }}</p>
                     <p class="card-text text-body-secondary">Posted: {{ peep.timestamp.strftime('%H:%M %d/%m/%Y') }}</p>
                 </div>

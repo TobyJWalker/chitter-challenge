@@ -39,12 +39,7 @@ def index():
 # show the home page, load the 20 most recent peeps
 @app.route('/home', methods=['GET'])
 def home():
-    peeps = sorted(Peep.select().limit(20), key=lambda p: p.timestamp, reverse=True)
-
-    # get the users of the peeps
-    users = {}
-    for peep in peeps:
-        users[peep.user] = User.get_by_id(peep.user).username
+    peeps = sorted(Peep.select().join(User).limit(20), key=lambda p: p.timestamp, reverse=True)
     
     # check session account still exists
     if 'user_id' in session:
@@ -53,7 +48,7 @@ def home():
         except peewee.DoesNotExist:
             session.pop('user_id')
 
-    return render_template('home.html', peeps=peeps, users=users, logged_in=session['user_id'] if 'user_id' in session else None)
+    return render_template('home.html', peeps=peeps, logged_in=session['user_id'] if 'user_id' in session else None)
 
 # show the peeps of a specific user
 @app.route('/user/<user>', methods=['GET'])
@@ -207,18 +202,12 @@ def get_mentions():
 
     try:
         # get a list of peeps that mention the user
-        peeps = Peep.select().where(Peep.content.contains(f'@{session["username"]}'))
-
-        # get the users of the peeps
-        users = {}
-        for peep in peeps:
-            users[peep.user] = User.get_by_id(peep.user).username
+        peeps = Peep.select().join(User).where(Peep.content.contains(f'@{session["username"]}'))
 
     except:
         peeps = []
-        users = {}
 
-    return render_template('mentions.html', peeps=peeps, users=users)
+    return render_template('mentions.html', peeps=peeps)
 
 
 # These lines start the server if you run this file directly
