@@ -8,6 +8,7 @@ import peewee
 from hashlib import sha256
 from lib.model_definition import User, Peep
 
+
 def seed_database():
 
     Peep.drop_table()

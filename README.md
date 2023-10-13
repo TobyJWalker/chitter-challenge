@@ -11,7 +11,7 @@ I will also be experimenting with some basic css such as bootstrap.
 - Install psql
 - Create 'chitter' database
 - run 'python3 lib/model_definition.py' to create the tables
-- Optionally run 'python3 seeds/seed_db.py' to seed the database with test data (currently not working, pytest will seed for you)
+- Optionally run 'python3 seed_database.py' to seed the database with test data
 
 - Create a .env file with an email and password for the email account you want to use to send emails from. Keys are EMAIL_ADDR and GMAIL_APP_PW. Email functionality is disabled without these.
 
