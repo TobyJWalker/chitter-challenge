@@ -5,13 +5,13 @@ I will also be experimenting with some basic css such as bootstrap.
 
 ## How to use
 
-- Run pipenv install to install dependencies
-- You may need to run 'playwright install' too
+- Run ```pipenv install``` to install dependencies
+- You may need to run ```playwright install``` too
 
 - Install psql
 - Create 'chitter' database
-- run 'python3 lib/model_definition.py' to create the tables
-- Optionally run 'python3 seed_database.py' to seed the database with test data
+- run ```python3 lib/model_definition.py``` to create the tables
+- Optionally run ```python3 seed_database.py``` to seed the database with test data
 
 - Create a .env file with an email and password for the email account you want to use to send emails from. Keys are EMAIL_ADDR and GMAIL_APP_PW. Email functionality is disabled without these.
 
@@ -19,8 +19,12 @@ The last one is the password for the email account. This is needed because gmail
 
 I can provide you with an email and password if you want to test the email functionality. Just ask me.
 
-- Run pipenv shell to enter the virtual environment and load variables
-- Run 'python3 app.py' to start the web server
+- Run ```brew install mkcert``` to install mkcert (if you dont have it)
+- Run ```mkcert -install``` to install the mkcert root certificate
+- Run ```mkcert localhost``` to create a certificate for localhost in project directory for secure connection
+
+- Run ```pipenv shell``` to enter the virtual environment and load variables
+- Run ```python3 app.py``` to start the web server
 - Run pytest to run any project tests
 
 ## Testing
